@@ -39,7 +39,7 @@ pub struct SealPreCommitPhase1 {
     piece_infos: Vec<WebPieceInfo>,
 }
 
-#[derive(Deserialize, Clone, Debug)]
-pub struct SealPreCommitPhase2 {
-    phase1_output:
-}
+// #[derive(Deserialize, Clone, Debug)]
+// pub struct SealPreCommitPhase2 {
+//     phase1_output:
+// }
