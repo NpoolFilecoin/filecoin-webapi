@@ -1,5 +1,6 @@
-use actix_web::{HttpRequest, HttpResponse};
 use actix_web::web::Form;
+use actix_web::{HttpRequest, HttpResponse};
+use filecoin_proofs_api::post;
 use log::info;
 
 use crate::forms::*;
@@ -11,5 +12,8 @@ pub fn test() -> HttpResponse {
 
 pub fn generate_winning_post(_req: HttpRequest, form: Form<GenerateWinningPostData>) -> HttpResponse {
     info!("generate_winning_post");
-    unimplemented!()
+
+    let _r = post::generate_winning_post(&form.randomness, &form.replicas.as_object(), form.prover_id);
+
+    HttpResponse::Ok().finish()
 }

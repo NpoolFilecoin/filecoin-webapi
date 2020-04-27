@@ -1,9 +1,9 @@
-mod types;
-mod handle;
-mod forms;
-
 use actix_web::{middleware, web};
 use actix_web::{App, HttpServer};
+
+mod forms;
+mod handle;
+mod types;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -21,8 +21,8 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/test").route(web::get().to(handle::test)))
             .service(web::resource("/generate_winning_post").route(web::post().to(handle::generate_winning_post)))
     })
-        .bind("localhost:8888")
-        .expect("Bind failed")
-        .run()
+    .bind("localhost:8888")
+    .expect("Bind failed")
+    .run()
     .await
 }
