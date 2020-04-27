@@ -17,7 +17,7 @@ impl WebRegisteredPoStProof {
             4 => RegisteredPoStProof::StackedDrgWindow2KiBV1,
             5 => RegisteredPoStProof::StackedDrgWindow8MiBV1,
             6 => RegisteredPoStProof::StackedDrgWindow512MiBV1,
-            7 => RegisteredPoStProof::StackedDrgWinning32GiBV1,
+            7 => RegisteredPoStProof::StackedDrgWindow32GiBV1,
             _ => unreachable!(),
         }
     }
