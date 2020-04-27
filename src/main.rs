@@ -7,7 +7,13 @@ use actix_web::{App, HttpServer};
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    env_logger::init();
+    if std::env::var("RUST_LOG").is_err() {
+        if cfg!(debug_assertions) {
+            std::env::set_var("RUST_LOG", "filecoin_webapi=info,actix_web=info");
+        } else {
+            std::env::set_var("RUST_LOG", "filecoin_webapi=warn,actix_web=warn");
+        }
+    }
 
     HttpServer::new(|| {
         App::new()
@@ -15,8 +21,8 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/test").route(web::get().to(handle::test)))
             .service(web::resource("/generate_winning_post").route(web::post().to(handle::generate_winning_post)))
     })
-    .bind("localhost:8888")
-    .expect("Bind failed")
-    .run()
+        .bind("localhost:8888")
+        .expect("Bind failed")
+        .run()
     .await
 }
