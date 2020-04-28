@@ -26,24 +26,24 @@ pub struct VerifyWinningPostData {
     pub prover_id: ProverId,
 }
 
-type GenerateWindowPostData = GenerateWinningPostData;
+pub type GenerateWindowPostData = GenerateWinningPostData;
 
-type VerifyWindowPostData = VerifyWinningPostData;
+pub type VerifyWindowPostData = VerifyWinningPostData;
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ClearCacheData {
-    sector_size: u64,
-    cache_path: String,
+    pub sector_size: u64,
+    pub cache_path: String,
 }
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct SealPreCommitPhase1 {
-    registered_proof: WebRegisteredPoStProof,
-    cache_path: String,
-    in_path: String,
-    out_path: String,
-    prover_id: ProverId,
-    sector_id: SectorId,
-    ticket: WebTicket,
-    piece_infos: Vec<WebPieceInfo>,
+    pub registered_proof: RegisteredPoStProof,
+    pub cache_path: String,
+    pub in_path: String,
+    pub out_path: String,
+    pub prover_id: ProverId,
+    pub sector_id: SectorId,
+    pub ticket: WebTicket,
+    pub piece_infos: Vec<WebPieceInfo>,
 }

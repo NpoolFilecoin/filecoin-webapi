@@ -1,28 +1,7 @@
-use filecoin_proofs_api::{
-    ChallengeSeed, Commitment, PrivateReplicaInfo, PublicReplicaInfo, RegisteredPoStProof, SectorId,
-};
+use filecoin_proofs_api::{Commitment, PrivateReplicaInfo, PublicReplicaInfo, RegisteredPoStProof, SectorId};
 use serde::Deserialize;
 use std::collections::BTreeMap;
 use std::path::PathBuf;
-
-#[derive(Deserialize, Debug, Clone)]
-pub struct WebRegisteredPoStProof(u32);
-
-impl WebRegisteredPoStProof {
-    pub fn as_object(&self) -> RegisteredPoStProof {
-        match self.0 {
-            0 => RegisteredPoStProof::StackedDrgWinning2KiBV1,
-            1 => RegisteredPoStProof::StackedDrgWinning8MiBV1,
-            2 => RegisteredPoStProof::StackedDrgWinning512MiBV1,
-            3 => RegisteredPoStProof::StackedDrgWinning32GiBV1,
-            4 => RegisteredPoStProof::StackedDrgWindow2KiBV1,
-            5 => RegisteredPoStProof::StackedDrgWindow8MiBV1,
-            6 => RegisteredPoStProof::StackedDrgWindow512MiBV1,
-            7 => RegisteredPoStProof::StackedDrgWindow32GiBV1,
-            _ => unreachable!(),
-        }
-    }
-}
 
 pub type WebTicket = [u8; 32];
 pub type WebSnarkProof = Vec<u8>;
@@ -48,7 +27,7 @@ pub struct WebPieceInfo {
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct WebPrivateReplicaInfo {
-    pub registered_proof: WebRegisteredPoStProof,
+    pub registered_proof: RegisteredPoStProof,
     pub comm_r: Commitment,
     pub cache_dir: String,
     pub replica_path: String,
@@ -57,7 +36,7 @@ pub struct WebPrivateReplicaInfo {
 impl WebPrivateReplicaInfo {
     pub fn as_object(&self) -> PrivateReplicaInfo {
         PrivateReplicaInfo::new(
-            self.registered_proof.as_object(),
+            self.registered_proof,
             self.comm_r,
             PathBuf::from(&self.cache_dir),
             PathBuf::from(&self.replica_path),

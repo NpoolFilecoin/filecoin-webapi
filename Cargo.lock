@@ -1217,6 +1217,7 @@ dependencies = [
  "filecoin-proofs-api",
  "json",
  "log",
+ "mime",
  "serde 1.0.106",
  "serde_derive",
  "serde_json",
