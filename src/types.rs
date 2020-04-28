@@ -1,8 +1,9 @@
+use filecoin_proofs_api::{
+    ChallengeSeed, Commitment, PrivateReplicaInfo, PublicReplicaInfo, RegisteredPoStProof, SectorId,
+};
+use serde::Deserialize;
 use std::collections::BTreeMap;
 use std::path::PathBuf;
-
-use filecoin_proofs_api::{ChallengeSeed, Commitment, PrivateReplicaInfo, RegisteredPoStProof, SectorId};
-use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct WebRegisteredPoStProof(u32);
@@ -23,15 +24,14 @@ impl WebRegisteredPoStProof {
     }
 }
 
-pub type WebProverId = [u8; 32];
 pub type WebTicket = [u8; 32];
 pub type WebSnarkProof = Vec<u8>;
 pub type WebUnpaddedBytesAmount = u64;
 
 #[derive(Deserialize, Debug, Clone)]
-pub struct WebReplicas(Vec<WebReplica>);
+pub struct WebPrivateReplicas(Vec<WebPrivateReplica>);
 
-impl WebReplicas {
+impl WebPrivateReplicas {
     pub fn as_object(&self) -> BTreeMap<SectorId, PrivateReplicaInfo> {
         self.0
             .iter()
@@ -66,7 +66,41 @@ impl WebPrivateReplicaInfo {
 }
 
 #[derive(Deserialize, Debug, Clone)]
-pub struct WebReplica {
+pub struct WebPrivateReplica {
     pub sector_id: SectorId,
     pub private_replica_info: WebPrivateReplicaInfo,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct WebPublicReplica {
+    pub sector_id: SectorId,
+    pub public_replica_info: WebPublicReplicaInfo,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct WebPublicReplicaInfo {
+    pub registered_proof: RegisteredPoStProof,
+    pub comm_r: String,
+    pub sector_id: u64,
+}
+
+impl WebPublicReplicaInfo {
+    pub fn as_object(&self) -> PublicReplicaInfo {
+        PublicReplicaInfo::new(
+            self.registered_proof,
+            slice_to_array_clone!(self.comm_r.as_bytes(), [u8; 32]).unwrap(),
+        )
+    }
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct WebPublicReplicas(Vec<WebPublicReplica>);
+
+impl WebPublicReplicas {
+    pub fn as_object(&self) -> BTreeMap<SectorId, PublicReplicaInfo> {
+        self.0
+            .iter()
+            .map(|x| (x.sector_id, x.public_replica_info.as_object()))
+            .collect()
+    }
 }

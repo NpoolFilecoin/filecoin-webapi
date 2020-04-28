@@ -1,21 +1,29 @@
-use filecoin_proofs_api::{ChallengeSeed, SectorId};
+use filecoin_proofs_api::{ChallengeSeed, ProverId, RegisteredPoStProof, SectorId};
 use serde::Deserialize;
 
 use crate::types::*;
 
 #[derive(Deserialize, Clone, Debug)]
+pub struct GenerateWinningPostSectorChallengeData {
+    pub proof_type: RegisteredPoStProof,
+    pub randomness: ChallengeSeed,
+    pub sector_set_len: u64,
+    pub prover_id: ProverId,
+}
+
+#[derive(Deserialize, Clone, Debug)]
 pub struct GenerateWinningPostData {
     pub randomness: ChallengeSeed,
-    pub replicas: WebReplicas,
-    pub prover_id: WebProverId,
+    pub replicas: WebPrivateReplicas,
+    pub prover_id: ProverId,
 }
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct VerifyWinningPostData {
-    randomness: ChallengeSeed,
-    proof: String,
-    replicas: WebReplicas,
-    prover_id: WebProverId,
+    pub randomness: ChallengeSeed,
+    pub proof: String,
+    pub replicas: WebPublicReplicas,
+    pub prover_id: ProverId,
 }
 
 type GenerateWindowPostData = GenerateWinningPostData;
@@ -34,13 +42,8 @@ pub struct SealPreCommitPhase1 {
     cache_path: String,
     in_path: String,
     out_path: String,
-    prover_id: WebProverId,
+    prover_id: ProverId,
     sector_id: SectorId,
     ticket: WebTicket,
     piece_infos: Vec<WebPieceInfo>,
 }
-
-// #[derive(Deserialize, Clone, Debug)]
-// pub struct SealPreCommitPhase2 {
-//     phase1_output:
-// }

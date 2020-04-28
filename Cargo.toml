@@ -13,6 +13,7 @@ serde = "*"
 serde_derive = "*"
 serde_json = "*"
 json = "*"
+slice_as_array = "*"
 
 [dependencies.filecoin-proofs-api]
 git = "https://github.com/filecoin-project/rust-filecoin-proofs-api.git"
