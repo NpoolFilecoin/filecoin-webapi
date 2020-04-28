@@ -42,7 +42,7 @@ pub async fn generate_winning_post_sector_challenge(
         data.prover_id,
     );
 
-    HttpResponse::Ok().json(r.map_err(|_| "Error"))
+    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
 }
 
 pub async fn generate_winning_post(_req: HttpRequest, data: Json<GenerateWinningPostData>) -> HttpResponse {
@@ -64,7 +64,7 @@ pub async fn verify_winning_post(_req: HttpRequest, data: Json<VerifyWinningPost
         data.prover_id,
     );
 
-    HttpResponse::Ok().json(r.map_err(|_| "Error"))
+    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
 }
 
 pub async fn generate_window_post(_req: HttpRequest, data: Json<GenerateWindowPostData>) -> HttpResponse {
@@ -72,7 +72,7 @@ pub async fn generate_window_post(_req: HttpRequest, data: Json<GenerateWindowPo
 
     let r = post::generate_window_post(&data.randomness, &data.replicas.as_object(), data.prover_id);
 
-    HttpResponse::Ok().json(r.map_err(|_| "Error"))
+    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
 }
 
 pub async fn verify_window_post(_req: HttpRequest, data: Json<VerifyWindowPostData>) -> HttpResponse {
@@ -85,5 +85,5 @@ pub async fn verify_window_post(_req: HttpRequest, data: Json<VerifyWindowPostDa
         data.prover_id,
     );
 
-    HttpResponse::Ok().json(r.map_err(|_| "Error"))
+    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
 }

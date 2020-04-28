@@ -1,4 +1,4 @@
-use filecoin_proofs_api::{ChallengeSeed, ProverId, RegisteredPoStProof, SectorId};
+use filecoin_proofs_api::{ChallengeSeed, ProverId, RegisteredPoStProof, SectorId, Ticket};
 use serde::Deserialize;
 
 use crate::types::*;
@@ -44,6 +44,6 @@ pub struct SealPreCommitPhase1 {
     pub out_path: String,
     pub prover_id: ProverId,
     pub sector_id: SectorId,
-    pub ticket: WebTicket,
+    pub ticket: Ticket,
     pub piece_infos: Vec<WebPieceInfo>,
 }

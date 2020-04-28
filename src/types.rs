@@ -3,7 +3,6 @@ use serde::Deserialize;
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
-pub type WebTicket = [u8; 32];
 pub type WebSnarkProof = Vec<u8>;
 pub type WebUnpaddedBytesAmount = u64;
 
@@ -59,16 +58,13 @@ pub struct WebPublicReplica {
 #[derive(Deserialize, Debug, Clone)]
 pub struct WebPublicReplicaInfo {
     pub registered_proof: RegisteredPoStProof,
-    pub comm_r: String,
+    pub comm_r: Commitment,
     pub sector_id: u64,
 }
 
 impl WebPublicReplicaInfo {
     pub fn as_object(&self) -> PublicReplicaInfo {
-        PublicReplicaInfo::new(
-            self.registered_proof,
-            slice_to_array_clone!(self.comm_r.as_bytes(), [u8; 32]).unwrap(),
-        )
+        PublicReplicaInfo::new(self.registered_proof, self.comm_r)
     }
 }
 
