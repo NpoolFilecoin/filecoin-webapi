@@ -1216,6 +1216,7 @@ dependencies = [
  "env_logger",
  "filecoin-proofs-api",
  "lazy_static 0.2.11",
+ "libc",
  "log",
  "mime",
  "serde 1.0.106",

@@ -1,9 +1,8 @@
 #[macro_use]
 extern crate lazy_static;
 
-use actix_web::web::JsonConfig;
 use actix_web::{error, middleware, web};
-use actix_web::{App, FromRequest, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{App, HttpRequest, HttpResponse, HttpServer};
 use log::error;
 use std::sync::Mutex;
 
@@ -15,7 +14,6 @@ mod system;
 mod types;
 
 use polling::ServState;
-use post_data::GenerateWinningPostData;
 
 #[allow(dead_code)]
 fn json_error_handler(err: error::JsonPayloadError, _req: &HttpRequest) -> error::Error {
@@ -35,9 +33,9 @@ fn json_error_handler(err: error::JsonPayloadError, _req: &HttpRequest) -> error
 async fn main() -> std::io::Result<()> {
     if std::env::var("RUST_LOG").is_err() {
         if cfg!(debug_assertions) {
-            std::env::set_var("RUST_LOG", "filecoin_webapi=info,actix_web=info");
+            std::env::set_var("RUST_LOG", "filecoin_webapi=trace,actix_web=info");
         } else {
-            std::env::set_var("RUST_LOG", "filecoin_webapi=warn,actix_web=warn");
+            std::env::set_var("RUST_LOG", "filecoin_webapi=info,actix_web=warn");
         }
     }
 
@@ -50,6 +48,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/test").route(web::get().to(system::test)))
             .service(web::resource("/test_polling").route(web::post().to(system::test_polling)))
             .service(web::resource("/query_state").route(web::post().to(system::query_state)))
+            .service(web::resource("/remove_job").route(web::post().to(system::remove_job)))
             .service(
                 web::resource("/post/generate_winning_post_sector_challenge")
                     // .app_data(web::Json::<GenerateWinningPostData>::configure(|cfg| {

@@ -1,8 +1,6 @@
 use actix_web::web::{Data, Json};
-use actix_web::{HttpRequest, HttpResponse};
-use filecoin_proofs_api::post;
-use log::info;
-use serde::Deserialize;
+use actix_web::HttpResponse;
+use log::trace;
 use serde_json::json;
 use std::sync::mpsc::channel;
 use std::sync::Mutex;
@@ -10,14 +8,15 @@ use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
 use crate::polling::*;
-// use crate::types::*;
 
 pub async fn test() -> HttpResponse {
+    trace!("test");
+
     HttpResponse::Ok().body("Worked!")
 }
 
 pub async fn test_polling(state: Data<Mutex<ServState>>) -> HttpResponse {
-    info!("generate_winning_post_sector_challenge polling");
+    trace!("test polling");
 
     let (tx, rx) = channel();
     let handle: JoinHandle<()> = thread::spawn(move || {
@@ -32,7 +31,17 @@ pub async fn test_polling(state: Data<Mutex<ServState>>) -> HttpResponse {
 }
 
 pub async fn query_state(state: Data<Mutex<ServState>>, token: Json<u64>) -> HttpResponse {
+    trace!("query_state");
+
     let response = state.lock().unwrap().get(*token);
+
+    HttpResponse::Ok().json(response)
+}
+
+pub async fn remove_job(state: Data<Mutex<ServState>>, token: Json<u64>) -> HttpResponse {
+    trace!("remove_job");
+
+    let response = state.lock().unwrap().remove(*token);
 
     HttpResponse::Ok().json(response)
 }

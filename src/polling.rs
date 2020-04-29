@@ -1,9 +1,10 @@
+use libc::pthread_cancel;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
+use std::os::unix::thread::JoinHandleExt;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc::{Receiver, TryRecvError};
-use std::sync::Mutex;
 use std::thread::JoinHandle;
 
 lazy_static! {
@@ -15,7 +16,14 @@ pub enum PollingState {
     Started(u64),
     Pending,
     Done(Value),
-    Error,
+    Removed,
+    Error(PollingError),
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub enum PollingError {
+    NotExist,
+    Disconnected,
 }
 
 type WorkerReceiver = Receiver<Value>;
@@ -40,11 +48,28 @@ impl ServState {
 
     // TODO: remove if worker is done
     // TODO: remove if not query after long time
-    pub fn get(&self, token: u64) -> Option<PollingState> {
-        self.workers.get(&token).map(|x| match x.1.try_recv() {
-            Ok(r) => PollingState::Done(r),
-            Err(TryRecvError::Empty) => PollingState::Pending,
-            Err(TryRecvError::Disconnected) => PollingState::Error,
-        })
+    pub fn get(&self, token: u64) -> PollingState {
+        self.workers
+            .get(&token)
+            .map(|x| match x.1.try_recv() {
+                Ok(r) => PollingState::Done(r),
+                Err(TryRecvError::Empty) => PollingState::Pending,
+                Err(TryRecvError::Disconnected) => PollingState::Error(PollingError::Disconnected),
+            })
+            .unwrap_or(PollingState::Error(PollingError::NotExist))
+    }
+
+    pub fn remove(&mut self, token: u64) -> PollingState {
+        if let Some((handle, _rx)) = self.workers.remove(&token) {
+            let pthread_t = handle.into_pthread_t();
+
+            unsafe {
+                pthread_cancel(pthread_t);
+            }
+
+            return PollingState::Removed;
+        }
+
+        PollingState::Error(PollingError::NotExist)
     }
 }
