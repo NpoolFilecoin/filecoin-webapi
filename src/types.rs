@@ -1,10 +1,10 @@
-use filecoin_proofs_api::{Commitment, PrivateReplicaInfo, PublicReplicaInfo, RegisteredPoStProof, SectorId};
-use serde::Deserialize;
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
-pub type WebSnarkProof = Vec<u8>;
-pub type WebUnpaddedBytesAmount = u64;
+use filecoin_proofs_api::{
+    Commitment, PieceInfo, PrivateReplicaInfo, PublicReplicaInfo, RegisteredPoStProof, SectorId, UnpaddedBytesAmount,
+};
+use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct WebPrivateReplicas(Vec<WebPrivateReplica>);
@@ -21,7 +21,13 @@ impl WebPrivateReplicas {
 #[derive(Deserialize, Debug, Clone)]
 pub struct WebPieceInfo {
     pub commitment: Commitment,
-    pub size: WebUnpaddedBytesAmount,
+    pub size: UnpaddedBytesAmount,
+}
+
+impl WebPieceInfo {
+    pub fn as_object(&self) -> PieceInfo {
+        PieceInfo::new(self.commitment, self.size).unwrap()
+    }
 }
 
 #[derive(Deserialize, Debug, Clone)]

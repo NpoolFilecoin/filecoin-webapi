@@ -1,4 +1,4 @@
-use filecoin_proofs_api::{ProverId, RegisteredPoStProof, SectorId, Ticket};
+use filecoin_proofs_api::{ProverId, RegisteredSealProof, SectorId, Ticket};
 use serde::Deserialize;
 
 use crate::types::*;
@@ -11,7 +11,7 @@ pub struct ClearCacheData {
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct SealPreCommitPhase1Data {
-    pub registered_proof: RegisteredPoStProof,
+    pub registered_proof: RegisteredSealProof,
     pub cache_path: String,
     pub in_path: String,
     pub out_path: String,

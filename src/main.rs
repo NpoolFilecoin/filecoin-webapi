@@ -27,6 +27,11 @@ fn json_error_handler(err: error::JsonPayloadError, _req: &HttpRequest) -> error
     };
     error::InternalError::from_response(err, response).into()
 }
+// .app_data(web::Json::<GenerateWinningPostData>::configure(|cfg| {
+//     cfg.limit(4096)
+//         .content_type(|mime| mime.type_() == mime::TEXT && mime.subtype() == mime::PLAIN)
+//         .error_handler(json_error_handler)
+// }))
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -50,11 +55,6 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/remove_job").route(web::post().to(system::remove_job)))
             .service(
                 web::resource("/post/generate_winning_post_sector_challenge")
-                    // .app_data(web::Json::<GenerateWinningPostData>::configure(|cfg| {
-                    //     cfg.limit(4096)
-                    //         .content_type(|mime| mime.type_() == mime::TEXT && mime.subtype() == mime::PLAIN)
-                    //         .error_handler(json_error_handler)
-                    // }))
                     .route(web::post().to(post::generate_winning_post_sector_challenge)),
             )
             .service(web::resource("/post/generate_winning_post").route(web::post().to(post::generate_winning_post)))
@@ -62,6 +62,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/post/generate_window_post").route(web::post().to(post::generate_window_post)))
             .service(web::resource("/post/verify_window_post").route(web::post().to(post::verify_window_post)))
             .service(web::resource("/seal/clear_cache").route(web::post().to(seal::clear_cache)))
+            .service(web::resource("/seal/seal_pre_commit_phase1").route(web::post().to(seal::seal_pre_commit_phase1)))
     })
     .bind("[::]:8888")
     .expect("Bind failed")
