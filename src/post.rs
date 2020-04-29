@@ -1,33 +1,17 @@
-use actix_web::web::Json;
+use actix_web::web::{Data, Json};
 use actix_web::{HttpRequest, HttpResponse};
 use filecoin_proofs_api::post;
-use json::JsonValue;
 use log::info;
 use serde::Deserialize;
+use serde_json::json;
+use std::sync::mpsc::channel;
+use std::sync::Mutex;
+use std::thread::{self, JoinHandle};
+use std::time::Duration;
 
+use crate::polling::*;
 use crate::post_data::*;
 use crate::types::*;
-
-pub async fn test() -> HttpResponse {
-    HttpResponse::Ok().body("Worked!")
-}
-
-#[derive(Deserialize, Clone, Debug)]
-pub enum TestEnum {
-    A,
-    B,
-}
-
-#[derive(Deserialize, Clone, Debug)]
-pub struct TestData {
-    a: u64,
-    e: TestEnum,
-}
-
-pub async fn post_test(_req: HttpRequest, data: Json<TestData>) -> HttpResponse {
-    info!("post_test");
-    HttpResponse::Ok().body(format!("{:?}", data))
-}
 
 pub async fn generate_winning_post_sector_challenge(
     _req: HttpRequest,

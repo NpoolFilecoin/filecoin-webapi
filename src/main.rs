@@ -1,16 +1,20 @@
+#[macro_use]
+extern crate lazy_static;
+
 use actix_web::web::JsonConfig;
 use actix_web::{error, middleware, web};
 use actix_web::{App, FromRequest, HttpRequest, HttpResponse, HttpServer};
 use log::error;
+use std::sync::Mutex;
 
-#[macro_use]
-extern crate slice_as_array;
-
+mod polling;
 mod post;
 mod post_data;
 mod seal;
+mod system;
 mod types;
 
+use polling::ServState;
 use post_data::GenerateWinningPostData;
 
 #[allow(dead_code)]
@@ -41,9 +45,11 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
         App::new()
+            .app_data(web::Data::new(Mutex::new(ServState::new())))
             .wrap(middleware::Logger::default())
-            .service(web::resource("/test").route(web::get().to(post::test)))
-            .service(web::resource("/post/test").route(web::post().to(post::post_test)))
+            .service(web::resource("/test").route(web::get().to(system::test)))
+            .service(web::resource("/test_polling").route(web::post().to(system::test_polling)))
+            .service(web::resource("/query_state").route(web::post().to(system::query_state)))
             .service(
                 web::resource("/post/generate_winning_post_sector_challenge")
                     // .app_data(web::Json::<GenerateWinningPostData>::configure(|cfg| {
