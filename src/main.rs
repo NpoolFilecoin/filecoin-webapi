@@ -1,10 +1,10 @@
-#[macro_use]
-extern crate lazy_static;
+use std::sync::Mutex;
 
 use actix_web::{error, middleware, web};
 use actix_web::{App, HttpRequest, HttpResponse, HttpServer};
 use log::error;
-use std::sync::Mutex;
+
+use polling::ServState;
 
 mod polling;
 mod post;
@@ -13,8 +13,6 @@ mod seal;
 mod seal_data;
 mod system;
 mod types;
-
-use polling::ServState;
 
 #[allow(dead_code)]
 fn json_error_handler(err: error::JsonPayloadError, _req: &HttpRequest) -> error::Error {
@@ -63,6 +61,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/post/verify_winning_post").route(web::post().to(post::verify_winning_post)))
             .service(web::resource("/post/generate_window_post").route(web::post().to(post::generate_window_post)))
             .service(web::resource("/post/verify_window_post").route(web::post().to(post::verify_window_post)))
+            .service(web::resource("/seal/clear_cache").route(web::post().to(seal::clear_cache)))
     })
     .bind("[::]:8888")
     .expect("Bind failed")

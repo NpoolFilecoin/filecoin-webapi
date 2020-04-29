@@ -24,7 +24,6 @@ pub async fn generate_winning_post_sector_challenge(
 pub async fn generate_winning_post(_req: HttpRequest, data: Json<GenerateWinningPostData>) -> HttpResponse {
     trace!("generate_winning_post");
 
-    // HttpResponse::Ok().body(format!("{:?}", data))
     let r = post::generate_winning_post(&data.randomness, &data.replicas.as_object(), data.prover_id);
 
     HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))

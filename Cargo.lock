@@ -11,7 +11,7 @@ dependencies = [
  "futures-core",
  "futures-sink",
  "log",
- "tokio 0.2.19",
+ "tokio 0.2.20",
  "tokio-util 0.2.0",
 ]
 
@@ -115,7 +115,7 @@ dependencies = [
  "copyless",
  "futures-channel",
  "futures-util",
- "tokio 0.2.19",
+ "tokio 0.2.20",
 ]
 
 [[package]]
@@ -434,9 +434,9 @@ checksum = "b41b7ea54a0c9d92199de89e20e58d49f02f8e699814ef3fdf266f6f748d15c7"
 
 [[package]]
 name = "bellperson"
-version = "0.6.4"
+version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "905883b36765f93e30f0818de0e74dbff61032d126af16fb223b6ce71ef3b615"
+checksum = "3b9d518c1cb88659c6e3cba1dc16d7f80aab2596463a81125fefcaa58b51db88"
 dependencies = [
  "bit-vec",
  "blake2s_simd",
@@ -721,9 +721,9 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.10.1"
+version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "703dd7516d1a3e6483189c8d9a18a9af84877084630875ff9e922c201f9e0209"
+checksum = "2586208b33573b7f76ccfbe5adb076394c88deaf81b84d7213969805b0a952a7"
 dependencies = [
  "clicolors-control",
  "encode_unicode",
@@ -1215,7 +1215,7 @@ dependencies = [
  "actix-web",
  "env_logger",
  "filecoin-proofs-api",
- "lazy_static 0.2.11",
+ "lazy_static 1.4.0",
  "libc",
  "log",
  "mime",
@@ -1510,7 +1510,7 @@ dependencies = [
  "indexmap",
  "log",
  "slab",
- "tokio 0.2.19",
+ "tokio 0.2.20",
  "tokio-util 0.3.1",
 ]
 
@@ -1709,9 +1709,9 @@ dependencies = [
 
 [[package]]
 name = "ipconfig"
-version = "0.2.1"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa79fa216fbe60834a9c0737d7fcd30425b32d1c58854663e24d4c4b328ed83f"
+checksum = "f7e2f18aece9709094573a9f24f483c4f65caa4298e2f7ae1b71cc65d853fad7"
 dependencies = [
  "socket2",
  "widestring",
@@ -2968,9 +2968,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.51"
+version = "1.0.52"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da07b57ee2623368351e9a0488bb0b261322a15a6e0ae53e243cbdc0f4208da9"
+checksum = "a7894c8ed05b7a3a279aeb79025fdec1d3158080b75b98a08faf2806bb799edd"
 dependencies = [
  "itoa",
  "ryu",
@@ -3018,9 +3018,9 @@ checksum = "2579985fda508104f7587689507983eadd6a6e84dd35d6d115361f530916fa0d"
 
 [[package]]
 name = "sha2ni"
-version = "0.8.4"
+version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab4d7444ee4f4f03738fd75d092954ef1a3af5849813e77e60a370dd39919d2f"
+checksum = "1ce234f44a9c36fb84a168d4201b596d800e170aaa966a68857058cbe2d041a3"
 dependencies = [
  "block-buffer",
  "digest",
@@ -3344,9 +3344,9 @@ dependencies = [
 
 [[package]]
 name = "terminal_size"
-version = "0.1.11"
+version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "248dbcb93f8697c50b85b0492cf559b94667eb24c26934eae73ae5673175ebf6"
+checksum = "8038f95fc7a6f351163f4b964af631bd26c9e828f7db085f2a84aca56f70d13b"
 dependencies = [
  "libc",
  "winapi 0.3.8",
@@ -3384,18 +3384,18 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.15"
+version = "1.0.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54b3d3d2ff68104100ab257bb6bb0cb26c901abe4bd4ba15961f3bf867924012"
+checksum = "d12a1dae4add0f0d568eebc7bf142f145ba1aa2544cafb195c76f0f409091b60"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.15"
+version = "1.0.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca972988113b7715266f91250ddb98070d033c62a011fa0fcc57434a649310dd"
+checksum = "3f34e0c1caaa462fd840ec6b768946ea1e7842620d94fe29d5b847138f521269"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3451,9 +3451,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "0.2.19"
+version = "0.2.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d9c43f1bb96970e153bcbae39a65e249ccb942bd9d36dbdf086024920417c9c"
+checksum = "05c1d570eb1a36f0345a5ce9c6c6e665b70b73d11236912c0b477616aeec47b1"
 dependencies = [
  "bytes 0.5.4",
  "fnv",
@@ -3595,7 +3595,7 @@ dependencies = [
  "futures-sink",
  "log",
  "pin-project-lite",
- "tokio 0.2.19",
+ "tokio 0.2.20",
 ]
 
 [[package]]
@@ -3609,7 +3609,7 @@ dependencies = [
  "futures-sink",
  "log",
  "pin-project-lite",
- "tokio 0.2.19",
+ "tokio 0.2.20",
 ]
 
 [[package]]
@@ -3646,7 +3646,7 @@ dependencies = [
  "rand 0.7.3",
  "smallvec 1.4.0",
  "socket2",
- "tokio 0.2.19",
+ "tokio 0.2.20",
  "url 2.1.1",
 ]
 
@@ -3665,7 +3665,7 @@ dependencies = [
  "lru-cache",
  "resolv-conf",
  "smallvec 1.4.0",
- "tokio 0.2.19",
+ "tokio 0.2.20",
  "trust-dns-proto",
 ]
 

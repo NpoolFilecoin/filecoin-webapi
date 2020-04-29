@@ -1,11 +1,14 @@
-use libc::pthread_cancel;
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use std::collections::HashMap;
 use std::os::unix::thread::JoinHandleExt;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc::{Receiver, TryRecvError};
 use std::thread::JoinHandle;
+
+use libc::pthread_cancel;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+
+use lazy_static::lazy_static;
 
 lazy_static! {
     static ref WORKER_TOKEN: AtomicU64 = AtomicU64::new(0);
