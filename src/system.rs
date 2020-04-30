@@ -1,7 +1,10 @@
-use actix_web::web::{Data, Json};
-use actix_web::HttpResponse;
+use actix_multipart::Multipart;
+use actix_web::web::{self, Data, Json};
+use actix_web::{Error, HttpResponse};
+use futures::stream::{StreamExt, TryStreamExt};
 use log::trace;
 use serde_json::json;
+use std::io::Write;
 use std::sync::mpsc::channel;
 use std::sync::Mutex;
 use std::thread::{self, JoinHandle};
@@ -44,4 +47,42 @@ pub async fn remove_job(state: Data<Mutex<ServState>>, token: Json<u64>) -> Http
     let response = state.lock().unwrap().remove(*token);
 
     HttpResponse::Ok().json(response)
+}
+
+pub async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
+    trace!("upload_file");
+
+    // iterate over multipart stream
+    while let Ok(Some(mut field)) = payload.try_next().await {
+        let content_type = field.content_disposition().unwrap();
+        let filename = content_type.get_filename().unwrap();
+        let filepath = format!("/tmp/upload/{}", filename);
+        trace!("got file: {}", filename);
+
+        // File::create is blocking operation, use threadpool
+        let mut f = web::block(|| std::fs::File::create(filepath)).await.unwrap();
+
+        // Field in turn is stream of *Bytes* object
+        while let Some(chunk) = field.next().await {
+            let data = chunk.unwrap();
+            // filesystem operations are blocking, we have to use threadpool
+            f = web::block(move || f.write_all(&data).map(|_| f)).await?;
+        }
+    }
+
+    Ok(HttpResponse::Ok().into())
+}
+
+pub async fn upload_test() -> HttpResponse {
+    let html = r#"<html>
+        <head><title>Upload Test</title></head>
+        <body>
+            <form action="/upload_file" target="/upload_file" method="post" enctype="multipart/form-data">
+                <input type="file" multiple name="file"/>
+                <input type="submit" value="Submit">
+            </form>
+        </body>
+	    </html>"#;
+
+    HttpResponse::Ok().body(html)
 }

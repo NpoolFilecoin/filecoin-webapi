@@ -8,10 +8,12 @@ edition = "2018"
 lto = true
 
 [dependencies]
+actix-rt = "*"
 actix-web = "^2"
+actix-multipart = "*"
+futures = "^0.3"
 log = "*"
 env_logger = "*"
-actix-rt = "*"
 serde = "*"
 serde_derive = "*"
 serde_json = "*"

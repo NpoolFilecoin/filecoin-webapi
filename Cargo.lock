@@ -92,6 +92,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "actix-multipart"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4397935fca2a37a5353f94faa758fb176712806f605466b5a60373b204f0d836"
+dependencies = [
+ "actix-service",
+ "actix-utils",
+ "actix-web",
+ "bytes 0.5.4",
+ "derive_more",
+ "futures 0.3.4",
+ "httparse",
+ "log",
+ "mime",
+ "time",
+ "twoway",
+]
+
+[[package]]
 name = "actix-router"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1211,10 +1230,12 @@ dependencies = [
 name = "filecoin-webapi"
 version = "0.1.0"
 dependencies = [
+ "actix-multipart",
  "actix-rt",
  "actix-web",
  "env_logger",
  "filecoin-proofs-api",
+ "futures 0.3.4",
  "lazy_static 1.4.0",
  "libc",
  "log",
@@ -3685,10 +3706,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "twoway"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6b40075910de3a912adbd80b5d8bad6ad10a23eeb1f5bf9d4006839e899ba5bc"
+dependencies = [
+ "memchr",
+ "unchecked-index",
+]
+
+[[package]]
 name = "typenum"
 version = "1.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "373c8a200f9e67a0c95e62a4f52fbf80c23b4381c05a17845531982fa99e6b33"
+
+[[package]]
+name = "unchecked-index"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eeba86d422ce181a719445e51872fa30f1f7413b62becb52e95ec91aa262d85c"
 
 [[package]]
 name = "unicase"

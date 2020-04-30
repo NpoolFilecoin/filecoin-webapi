@@ -44,6 +44,7 @@ async fn main() -> std::io::Result<()> {
     }
 
     env_logger::init();
+    std::fs::create_dir_all("/tmp/upload/")?;
 
     HttpServer::new(|| {
         App::new()
@@ -53,6 +54,8 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/test_polling").route(web::post().to(system::test_polling)))
             .service(web::resource("/query_state").route(web::post().to(system::query_state)))
             .service(web::resource("/remove_job").route(web::post().to(system::remove_job)))
+            .service(web::resource("/upload_file").route(web::post().to(system::upload_file)))
+            .service(web::resource("/upload_test").route(web::get().to(system::upload_test)))
             .service(
                 web::resource("/post/generate_winning_post_sector_challenge")
                     .route(web::post().to(post::generate_winning_post_sector_challenge)),
