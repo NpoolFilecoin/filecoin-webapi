@@ -1,10 +1,10 @@
-use crate::types::*;
-
 use filecoin_proofs_api::seal::{SealCommitPhase1Output, SealPreCommitPhase1Output, SealPreCommitPhase2Output};
 use filecoin_proofs_api::{
     Commitment, ProverId, RegisteredSealProof, SectorId, Ticket, UnpaddedByteIndex, UnpaddedBytesAmount,
 };
 use serde::Deserialize;
+
+use crate::types::*;
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ClearCacheData {
@@ -94,8 +94,26 @@ pub struct GetUnsealedRangeData {
     pub num_bytes: UnpaddedBytesAmount,
 }
 
-// #[derive(Deserialize, Clone, Debug)]
-// pub struct GeneratePieceCommitmentData {
-//     pub registered_proof: RegisteredSealProof,
-//     pub source:
-// }
+#[derive(Deserialize, Clone, Debug)]
+pub struct GeneratePieceCommitmentData {
+    pub registered_proof: RegisteredSealProof,
+    pub source: String,
+    pub piece_size: UnpaddedBytesAmount,
+}
+
+#[derive(Deserialize, Clone, Debug)]
+pub struct AddPieceData {
+    pub registered_proof: RegisteredSealProof,
+    pub source: String,
+    pub target: String,
+    pub piece_size: UnpaddedBytesAmount,
+    pub piece_lengths: Vec<UnpaddedBytesAmount>,
+}
+
+#[derive(Deserialize, Clone, Debug)]
+pub struct WriteAndPreprocessData {
+    pub registered_proof: RegisteredSealProof,
+    pub source: String,
+    pub target: String,
+    pub piece_size: UnpaddedBytesAmount,
+}
