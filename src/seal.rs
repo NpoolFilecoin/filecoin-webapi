@@ -1,10 +1,14 @@
-use crate::seal_data::*;
+use std::fs::OpenOptions;
+use std::io::Result;
+use std::path::Path;
 
 use actix_web::web::Json;
 use actix_web::{HttpRequest, HttpResponse};
 use filecoin_proofs_api::{seal, PieceInfo};
 use log::trace;
-use std::path::Path;
+
+use crate::seal_data::*;
+use crate::types::WebPieceInfo;
 
 pub async fn clear_cache(_req: HttpRequest, data: Json<ClearCacheData>) -> HttpResponse {
     trace!("clear_cache");
@@ -131,4 +135,45 @@ pub async fn get_unsealed_range(data: Json<GetUnsealedRangeData>) -> HttpRespons
     );
 
     HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+}
+
+pub async fn generate_piece_commitment(data: Json<GeneratePieceCommitmentData>) -> Result<HttpResponse> {
+    trace!("generate_piece_commitment");
+
+    let source = OpenOptions::new().read(true).open(&data.source)?;
+    let r = seal::generate_piece_commitment(data.registered_proof, source, data.piece_size);
+
+    Ok(HttpResponse::Ok().json(r.map(|x| WebPieceInfo::from_object(x)).map_err(|e| format!("{:?}", e))))
+}
+
+pub async fn add_piece(data: Json<AddPieceData>) -> Result<HttpResponse> {
+    trace!("add_piece");
+
+    let source = OpenOptions::new().read(true).open(&data.source)?;
+    let target = OpenOptions::new().write(true).open(&data.target)?;
+    let r = seal::add_piece(
+        data.registered_proof,
+        source,
+        target,
+        data.piece_size,
+        &data.piece_lengths[..],
+    );
+
+    Ok(HttpResponse::Ok().json(
+        r.map(|(x, y)| AddPieceOutput::from_object((x, y)))
+            .map_err(|e| format!("{:?}", e)),
+    ))
+}
+
+pub async fn write_and_preprocess(data: Json<WriteAndPreprocessData>) -> Result<HttpResponse> {
+    trace!("write_and_preprocess");
+
+    let source = OpenOptions::new().read(true).open(&data.source)?;
+    let target = OpenOptions::new().write(true).open(&data.target)?;
+    let r = seal::write_and_preprocess(data.registered_proof, source, target, data.piece_size);
+
+    Ok(HttpResponse::Ok().json(
+        r.map(|(x, y)| WriteAndPreprocessOutput::from_object((x, y)))
+            .map_err(|e| format!("{:?}", e)),
+    ))
 }

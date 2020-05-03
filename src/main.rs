@@ -73,6 +73,11 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/seal/verify_seal").route(web::post().to(seal::verify_seal)))
             .service(web::resource("/seal/verify_batch_seal").route(web::post().to(seal::verify_batch_seal)))
             .service(web::resource("/seal/get_unsealed_range").route(web::post().to(seal::get_unsealed_range)))
+            .service(
+                web::resource("/seal/generate_piece_commitment").route(web::post().to(seal::generate_piece_commitment)),
+            )
+            .service(web::resource("/seal/add_piece").route(web::post().to(seal::add_piece)))
+            .service(web::resource("/seal/write_and_preprocess").route(web::post().to(seal::write_and_preprocess)))
     })
     .bind("[::]:8888")
     .expect("Bind failed")

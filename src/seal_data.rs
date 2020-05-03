@@ -1,8 +1,8 @@
 use filecoin_proofs_api::seal::{SealCommitPhase1Output, SealPreCommitPhase1Output, SealPreCommitPhase2Output};
 use filecoin_proofs_api::{
-    Commitment, ProverId, RegisteredSealProof, SectorId, Ticket, UnpaddedByteIndex, UnpaddedBytesAmount,
+    Commitment, PieceInfo, ProverId, RegisteredSealProof, SectorId, Ticket, UnpaddedByteIndex, UnpaddedBytesAmount,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::*;
 
@@ -110,6 +110,18 @@ pub struct AddPieceData {
     pub piece_lengths: Vec<UnpaddedBytesAmount>,
 }
 
+#[derive(Serialize, Clone, Debug)]
+pub struct AddPieceOutput(WebPieceInfo, UnpaddedBytesAmount);
+
+impl AddPieceOutput {
+    pub fn from_object((piece_info, size): (PieceInfo, UnpaddedBytesAmount)) -> Self {
+        Self {
+            0: WebPieceInfo::from_object(piece_info),
+            1: size,
+        }
+    }
+}
+
 #[derive(Deserialize, Clone, Debug)]
 pub struct WriteAndPreprocessData {
     pub registered_proof: RegisteredSealProof,
@@ -117,3 +129,5 @@ pub struct WriteAndPreprocessData {
     pub target: String,
     pub piece_size: UnpaddedBytesAmount,
 }
+
+pub type WriteAndPreprocessOutput = AddPieceOutput;
