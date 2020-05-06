@@ -53,12 +53,15 @@ pub async fn remove_job(state: Data<Mutex<ServState>>, token: Json<u64>) -> Http
 pub async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
     trace!("upload_file");
 
+    let mut file_name: Option<String> = None;
+
     // iterate over multipart stream
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_type = field.content_disposition().unwrap();
         let filename = content_type.get_filename().unwrap();
         let filepath = format!("/tmp/upload/{}", filename);
         trace!("got file: {}", filename);
+        file_name = Some(filename.to_string());
 
         // File::create is blocking operation, use threadpool
         let mut f = web::block(|| std::fs::File::create(filepath)).await.unwrap();
@@ -72,14 +75,14 @@ pub async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> 
     }
 
     // TODO: file name
-    Ok(HttpResponse::Ok().into())
+    Ok(HttpResponse::Ok().json(file_name))
 }
 
 pub async fn upload_test() -> HttpResponse {
     let html = r#"<html>
         <head><title>Upload Test</title></head>
         <body>
-            <form action="/upload_file" target="/upload_file" method="post" enctype="multipart/form-data">
+            <form action="/sys/upload_file" target="/sys/upload_file" method="post" enctype="multipart/form-data">
                 <input type="file" multiple name="file"/>
                 <input type="submit" value="Submit">
             </form>

@@ -51,11 +51,11 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(Mutex::new(ServState::new())))
             .wrap(middleware::Logger::default())
             .service(web::resource("/test").route(web::get().to(system::test)))
-            .service(web::resource("/test_polling").route(web::post().to(system::test_polling)))
-            .service(web::resource("/query_state").route(web::post().to(system::query_state)))
-            .service(web::resource("/remove_job").route(web::post().to(system::remove_job)))
-            .service(web::resource("/upload_file").route(web::post().to(system::upload_file)))
-            .service(web::resource("/upload_test").route(web::get().to(system::upload_test)))
+            .service(web::resource("/sys/test_polling").route(web::post().to(system::test_polling)))
+            .service(web::resource("/sys/query_state").route(web::post().to(system::query_state)))
+            .service(web::resource("/sys/remove_job").route(web::post().to(system::remove_job)))
+            .service(web::resource("/sys/upload_file").route(web::post().to(system::upload_file)))
+            .service(web::resource("/sys/upload_test").route(web::get().to(system::upload_test)))
             .service(
                 web::resource("/post/generate_winning_post_sector_challenge")
                     .route(web::post().to(post::generate_winning_post_sector_challenge)),
