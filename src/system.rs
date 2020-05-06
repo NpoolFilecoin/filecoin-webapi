@@ -79,7 +79,7 @@ pub async fn upload_test() -> HttpResponse {
     let html = r#"<html>
         <head><title>Upload Test</title></head>
         <body>
-            <form action="/upload_file" target="/upload_file" method="post" enctype="multipart/form-data">
+            <form action="/sys/upload_file" target="/sys/upload_file" method="post" enctype="multipart/form-data">
                 <input type="file" multiple name="file"/>
                 <input type="submit" value="Submit">
             </form>
