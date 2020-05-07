@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::os::unix::thread::JoinHandleExt;
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::mpsc::{Receiver, TryRecvError};
 use std::thread::JoinHandle;
 
@@ -12,6 +12,7 @@ use lazy_static::lazy_static;
 
 lazy_static! {
     static ref WORKER_TOKEN: AtomicU64 = AtomicU64::new(0);
+    static ref WORKER_INIT: AtomicBool = AtomicBool::new(false);
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -37,6 +38,9 @@ pub struct ServState {
 
 impl ServState {
     pub fn new() -> Self {
+        // NOTE: ensure ServState is init only once
+        assert_eq!(WORKER_INIT.swap(true, Ordering::SeqCst), false);
+
         Self {
             workers: HashMap::new(),
         }

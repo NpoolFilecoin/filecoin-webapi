@@ -1,6 +1,6 @@
 use std::io::Write;
 use std::sync::mpsc::channel;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
@@ -19,7 +19,7 @@ pub async fn test() -> HttpResponse {
     HttpResponse::Ok().body("Worked!")
 }
 
-pub async fn test_polling(state: Data<Mutex<ServState>>) -> HttpResponse {
+pub async fn test_polling(state: Data<Arc<Mutex<ServState>>>) -> HttpResponse {
     trace!("test polling");
 
     let (tx, rx) = channel();
@@ -34,7 +34,7 @@ pub async fn test_polling(state: Data<Mutex<ServState>>) -> HttpResponse {
     HttpResponse::Ok().json(response)
 }
 
-pub async fn query_state(state: Data<Mutex<ServState>>, token: Json<u64>) -> HttpResponse {
+pub async fn query_state(state: Data<Arc<Mutex<ServState>>>, token: Json<u64>) -> HttpResponse {
     trace!("query_state");
 
     let response = state.lock().unwrap().get(*token);
@@ -42,7 +42,7 @@ pub async fn query_state(state: Data<Mutex<ServState>>, token: Json<u64>) -> Htt
     HttpResponse::Ok().json(response)
 }
 
-pub async fn remove_job(state: Data<Mutex<ServState>>, token: Json<u64>) -> HttpResponse {
+pub async fn remove_job(state: Data<Arc<Mutex<ServState>>>, token: Json<u64>) -> HttpResponse {
     trace!("remove_job");
 
     let response = state.lock().unwrap().remove(*token);

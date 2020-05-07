@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 use actix_web::{error, middleware, web};
 use actix_web::{App, HttpRequest, HttpResponse, HttpServer};
@@ -45,10 +45,13 @@ async fn main() -> std::io::Result<()> {
 
     env_logger::init();
     std::fs::create_dir_all("/tmp/upload/")?;
+    let state = Arc::new(Mutex::new(ServState::new()));
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
+        let state = state.clone();
+
         App::new()
-            .app_data(web::Data::new(Mutex::new(ServState::new())))
+            .app_data(web::Data::new(state))
             .wrap(middleware::Logger::default())
             .service(web::resource("/test").route(web::get().to(system::test)))
             .service(web::resource("/sys/test_polling").route(web::post().to(system::test_polling)))
