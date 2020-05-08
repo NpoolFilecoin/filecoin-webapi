@@ -1,6 +1,6 @@
 use std::io::Write;
 use std::sync::mpsc::channel;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
@@ -19,7 +19,7 @@ pub async fn test() -> HttpResponse {
     HttpResponse::Ok().body("Worked!")
 }
 
-pub async fn test_polling(state: Data<Mutex<ServState>>) -> HttpResponse {
+pub async fn test_polling(state: Data<Arc<Mutex<ServState>>>) -> HttpResponse {
     trace!("test polling");
 
     let (tx, rx) = channel();
@@ -34,7 +34,7 @@ pub async fn test_polling(state: Data<Mutex<ServState>>) -> HttpResponse {
     HttpResponse::Ok().json(response)
 }
 
-pub async fn query_state(state: Data<Mutex<ServState>>, token: Json<u64>) -> HttpResponse {
+pub async fn query_state(state: Data<Arc<Mutex<ServState>>>, token: Json<u64>) -> HttpResponse {
     trace!("query_state");
 
     let response = state.lock().unwrap().get(*token);
@@ -42,7 +42,7 @@ pub async fn query_state(state: Data<Mutex<ServState>>, token: Json<u64>) -> Htt
     HttpResponse::Ok().json(response)
 }
 
-pub async fn remove_job(state: Data<Mutex<ServState>>, token: Json<u64>) -> HttpResponse {
+pub async fn remove_job(state: Data<Arc<Mutex<ServState>>>, token: Json<u64>) -> HttpResponse {
     trace!("remove_job");
 
     let response = state.lock().unwrap().remove(*token);
@@ -53,12 +53,15 @@ pub async fn remove_job(state: Data<Mutex<ServState>>, token: Json<u64>) -> Http
 pub async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
     trace!("upload_file");
 
+    let mut file_name: Option<String> = None;
+
     // iterate over multipart stream
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_type = field.content_disposition().unwrap();
         let filename = content_type.get_filename().unwrap();
         let filepath = format!("/tmp/upload/{}", filename);
         trace!("got file: {}", filename);
+        file_name = Some(filename.to_string());
 
         // File::create is blocking operation, use threadpool
         let mut f = web::block(|| std::fs::File::create(filepath)).await.unwrap();
@@ -72,7 +75,7 @@ pub async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> 
     }
 
     // TODO: file name
-    Ok(HttpResponse::Ok().into())
+    Ok(HttpResponse::Ok().json(file_name))
 }
 
 pub async fn upload_test() -> HttpResponse {
