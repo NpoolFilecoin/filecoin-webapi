@@ -7,6 +7,14 @@ edition = "2018"
 [profile.release]
 lto = true
 
+[lib]
+name = "filecoin_webapi"
+path = "src/lib.rs"
+
+[[bin]]
+name = "filecoin-webapi"
+path = "src/main.rs"
+
 [dependencies]
 actix-rt = "*"
 actix-web = "^2"
