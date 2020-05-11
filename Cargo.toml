@@ -8,8 +8,10 @@ edition = "2018"
 lto = true
 
 [lib]
+crate-type = ["rlib"]
 name = "filecoin_webapi"
 path = "src/lib.rs"
+edition = "2018"
 
 [[bin]]
 name = "filecoin-webapi"
