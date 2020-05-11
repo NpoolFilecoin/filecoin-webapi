@@ -1,5 +1,5 @@
 use filecoin_proofs_api::{ChallengeSeed, ProverId, RegisteredPoStProof};
-use serde::Deserialize;
+use serde_derive::Deserialize;
 
 use crate::types::*;
 

@@ -2,7 +2,7 @@ use filecoin_proofs_api::seal::{SealCommitPhase1Output, SealPreCommitPhase1Outpu
 use filecoin_proofs_api::{
     Commitment, PieceInfo, ProverId, RegisteredSealProof, SectorId, Ticket, UnpaddedByteIndex, UnpaddedBytesAmount,
 };
-use serde::{Deserialize, Serialize};
+use serde_derive::{Deserialize, Serialize};
 
 use crate::types::*;
 

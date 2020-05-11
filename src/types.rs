@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use filecoin_proofs_api::{
     Commitment, PieceInfo, PrivateReplicaInfo, PublicReplicaInfo, RegisteredPoStProof, SectorId, UnpaddedBytesAmount,
 };
-use serde::{Deserialize, Serialize};
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct WebPrivateReplicas(Vec<WebPrivateReplica>);
