@@ -6,7 +6,7 @@ use filecoin_proofs_api::{
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct WebPrivateReplicas(Vec<WebPrivateReplica>);
 
 impl WebPrivateReplicas {
@@ -37,7 +37,7 @@ impl WebPieceInfo {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct WebPrivateReplicaInfo {
     pub registered_proof: RegisteredPoStProof,
     pub comm_r: Commitment,
@@ -56,19 +56,19 @@ impl WebPrivateReplicaInfo {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct WebPrivateReplica {
     pub sector_id: SectorId,
     pub private_replica_info: WebPrivateReplicaInfo,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct WebPublicReplica {
     pub sector_id: SectorId,
     pub public_replica_info: WebPublicReplicaInfo,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct WebPublicReplicaInfo {
     pub registered_proof: RegisteredPoStProof,
     pub comm_r: Commitment,
@@ -81,7 +81,7 @@ impl WebPublicReplicaInfo {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct WebPublicReplicas(Vec<WebPublicReplica>);
 
 impl WebPublicReplicas {

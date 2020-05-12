@@ -1,9 +1,9 @@
 use filecoin_proofs_api::{ChallengeSeed, ProverId, RegisteredPoStProof};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::*;
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct GenerateWinningPostSectorChallengeData {
     pub proof_type: RegisteredPoStProof,
     pub randomness: ChallengeSeed,
@@ -11,14 +11,14 @@ pub struct GenerateWinningPostSectorChallengeData {
     pub prover_id: ProverId,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct GenerateWinningPostData {
     pub randomness: ChallengeSeed,
     pub replicas: WebPrivateReplicas,
     pub prover_id: ProverId,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct VerifyWinningPostData {
     pub randomness: ChallengeSeed,
     pub proof: String,
