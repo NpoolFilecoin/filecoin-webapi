@@ -34,7 +34,7 @@ pub async fn verify_winning_post(_req: HttpRequest, data: Json<VerifyWinningPost
 
     let r = post::verify_winning_post(
         &data.randomness,
-        data.proof.as_bytes(),
+        &data.proof,
         &data.replicas.as_object(),
         data.prover_id,
     );
@@ -55,7 +55,7 @@ pub async fn verify_window_post(_req: HttpRequest, data: Json<VerifyWindowPostDa
 
     let r = post::verify_window_post(
         &data.randomness,
-        data.proof.as_bytes(),
+        &data.proof,
         &data.replicas.as_object(),
         data.prover_id,
     );

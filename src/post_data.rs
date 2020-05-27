@@ -21,7 +21,7 @@ pub struct GenerateWinningPostData {
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct VerifyWinningPostData {
     pub randomness: ChallengeSeed,
-    pub proof: String,
+    pub proof: Vec<u8>,
     pub replicas: WebPublicReplicas,
     pub prover_id: ProverId,
 }
