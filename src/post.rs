@@ -9,7 +9,7 @@ pub async fn generate_winning_post_sector_challenge(
     _req: HttpRequest,
     data: Json<GenerateWinningPostSectorChallengeData>,
 ) -> HttpResponse {
-    trace!("generate_winning_post_sector_challenge");
+    trace!("generate_winning_post_sector_challenge: {:?}", data);
 
     let r = post::generate_winning_post_sector_challenge(
         data.proof_type,
@@ -22,7 +22,7 @@ pub async fn generate_winning_post_sector_challenge(
 }
 
 pub async fn generate_winning_post(_req: HttpRequest, data: Json<GenerateWinningPostData>) -> HttpResponse {
-    trace!("generate_winning_post");
+    trace!("generate_winning_post: {:?}", data);
 
     let r = post::generate_winning_post(&data.randomness, &data.replicas.as_object(), data.prover_id);
 
@@ -30,7 +30,7 @@ pub async fn generate_winning_post(_req: HttpRequest, data: Json<GenerateWinning
 }
 
 pub async fn verify_winning_post(_req: HttpRequest, data: Json<VerifyWinningPostData>) -> HttpResponse {
-    trace!("verify_winning_post");
+    trace!("verify_winning_post: {:?}", data);
 
     let r = post::verify_winning_post(
         &data.randomness,
@@ -43,7 +43,7 @@ pub async fn verify_winning_post(_req: HttpRequest, data: Json<VerifyWinningPost
 }
 
 pub async fn generate_window_post(_req: HttpRequest, data: Json<GenerateWindowPostData>) -> HttpResponse {
-    trace!("generate_window_post");
+    trace!("generate_window_post: {:?}", data);
 
     let r = post::generate_window_post(&data.randomness, &data.replicas.as_object(), data.prover_id);
 
@@ -51,7 +51,7 @@ pub async fn generate_window_post(_req: HttpRequest, data: Json<GenerateWindowPo
 }
 
 pub async fn verify_window_post(_req: HttpRequest, data: Json<VerifyWindowPostData>) -> HttpResponse {
-    trace!("verify_window_post");
+    trace!("verify_window_post: {:?}", data);
 
     let r = post::verify_window_post(
         &data.randomness,
