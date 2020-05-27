@@ -7,7 +7,7 @@ use filecoin_proofs_api::{
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct WebPrivateReplicas(Vec<WebPrivateReplica>);
+pub struct WebPrivateReplicas(pub Vec<WebPrivateReplica>);
 
 impl WebPrivateReplicas {
     pub fn as_object(&self) -> BTreeMap<SectorId, PrivateReplicaInfo> {
