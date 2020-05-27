@@ -82,7 +82,7 @@ impl WebPublicReplicaInfo {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct WebPublicReplicas(Vec<WebPublicReplica>);
+pub struct WebPublicReplicas(pub Vec<WebPublicReplica>);
 
 impl WebPublicReplicas {
     pub fn as_object(&self) -> BTreeMap<SectorId, PublicReplicaInfo> {
