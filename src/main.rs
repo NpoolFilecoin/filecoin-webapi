@@ -1,8 +1,9 @@
+use std::env;
 use std::sync::{Arc, Mutex};
 
 use actix_web::{error, middleware, web};
 use actix_web::{App, HttpRequest, HttpResponse, HttpServer};
-use log::error;
+use log::{error, warn};
 
 use polling::ServState;
 
@@ -35,6 +36,9 @@ fn json_error_handler(err: error::JsonPayloadError, _req: &HttpRequest) -> error
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
+    let args: Vec<String> = env::args().collect();
+    let bind_address = &args[1];
+
     if std::env::var("RUST_LOG").is_err() {
         if cfg!(debug_assertions) {
             std::env::set_var("RUST_LOG", "filecoin_webapi=trace,actix_web=info");
@@ -46,6 +50,8 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
     std::fs::create_dir_all("/tmp/upload/")?;
     let state = Arc::new(Mutex::new(ServState::new()));
+
+    warn!("Listening: {}", bind_address);
 
     HttpServer::new(move || {
         let state = state.clone();
@@ -82,7 +88,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/seal/add_piece").route(web::post().to(seal::add_piece)))
             .service(web::resource("/seal/write_and_preprocess").route(web::post().to(seal::write_and_preprocess)))
     })
-    .bind("[::]:8888")
+    .bind(bind_address)
     .expect("Bind failed")
     .run()
     .await
