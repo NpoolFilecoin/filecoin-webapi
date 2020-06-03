@@ -44,7 +44,7 @@ pub async fn verify_winning_post(_req: HttpRequest, data: Json<VerifyWinningPost
     );
 
     let response = r.map_err(|e| format!("{:?}", e));
-    trace!("verify_winning_post finish: {:?}", data);
+    trace!("verify_winning_post finish: {:?}", response);
     HttpResponse::Ok().json(response)
 }
 
