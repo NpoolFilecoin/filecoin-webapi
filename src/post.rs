@@ -18,7 +18,9 @@ pub async fn generate_winning_post_sector_challenge(
         data.prover_id,
     );
 
-    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+    let response = r.map_err(|e| format!("{:?}", e));
+    trace!("generate_winning_post_sector_challenge finish: {:?}", response);
+    HttpResponse::Ok().json(response)
 }
 
 pub async fn generate_winning_post(_req: HttpRequest, data: Json<GenerateWinningPostData>) -> HttpResponse {
@@ -26,7 +28,9 @@ pub async fn generate_winning_post(_req: HttpRequest, data: Json<GenerateWinning
 
     let r = post::generate_winning_post(&data.randomness, &data.replicas.as_object(), data.prover_id);
 
-    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+    let response = r.map_err(|e| format!("{:?}", e));
+    trace!("generate_winning_post finish: {:?}", response);
+    HttpResponse::Ok().json(response)
 }
 
 pub async fn verify_winning_post(_req: HttpRequest, data: Json<VerifyWinningPostData>) -> HttpResponse {
@@ -39,7 +43,9 @@ pub async fn verify_winning_post(_req: HttpRequest, data: Json<VerifyWinningPost
         data.prover_id,
     );
 
-    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+    let response = r.map_err(|e| format!("{:?}", e));
+    trace!("verify_winning_post finish: {:?}", data);
+    HttpResponse::Ok().json(response)
 }
 
 pub async fn generate_window_post(_req: HttpRequest, data: Json<GenerateWindowPostData>) -> HttpResponse {
@@ -47,7 +53,9 @@ pub async fn generate_window_post(_req: HttpRequest, data: Json<GenerateWindowPo
 
     let r = post::generate_window_post(&data.randomness, &data.replicas.as_object(), data.prover_id);
 
-    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+    let response = r.map_err(|e| format!("{:?}", e));
+    trace!("generate_window_post finish: {:?}", response);
+    HttpResponse::Ok().json(response)
 }
 
 pub async fn verify_window_post(_req: HttpRequest, data: Json<VerifyWindowPostData>) -> HttpResponse {
@@ -60,5 +68,7 @@ pub async fn verify_window_post(_req: HttpRequest, data: Json<VerifyWindowPostDa
         data.prover_id,
     );
 
-    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+    let response = r.map_err(|e| format!("{:?}", e));
+    trace!("verify_window_post finish: {:?}", response);
+    HttpResponse::Ok().json(response)
 }
