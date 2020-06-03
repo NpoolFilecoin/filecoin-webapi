@@ -28,4 +28,10 @@ pub struct VerifyWinningPostData {
 
 pub type GenerateWindowPostData = GenerateWinningPostData;
 
-pub type VerifyWindowPostData = VerifyWinningPostData;
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct VerifyWindowPostData {
+    pub randomness: ChallengeSeed,
+    pub proof: Vec<(RegisteredPoStProof, Vec<u8>)>,
+    pub replicas: WebPublicReplicas,
+    pub prover_id: ProverId,
+}

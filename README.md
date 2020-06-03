@@ -17,5 +17,5 @@ cargo build --release
 ## Run
 ```bash
 cd target/release
-./filecoin-webapi localhost:5000
+./filecoin-webapi 0.0.0.0:5000
 ```

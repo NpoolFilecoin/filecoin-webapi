@@ -61,9 +61,11 @@ pub async fn generate_window_post(_req: HttpRequest, data: Json<GenerateWindowPo
 pub async fn verify_window_post(_req: HttpRequest, data: Json<VerifyWindowPostData>) -> HttpResponse {
     trace!("verify_window_post: {:?}", data);
 
+    let proofs: Vec<_> = data.proof.iter().map(|(x, y)| (*x, y.as_slice())).collect();
+
     let r = post::verify_window_post(
         &data.randomness,
-        &data.proof,
+        proofs.as_slice(),
         &data.replicas.as_object(),
         data.prover_id,
     );
