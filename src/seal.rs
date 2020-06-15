@@ -1,14 +1,18 @@
 use std::fs::OpenOptions;
 use std::io::Result;
+use std::sync::mpsc::channel;
+use std::sync::{Arc, Mutex};
+use std::thread::{self, JoinHandle};
 use std::path::Path;
 
-use actix_web::web::Json;
+use actix_web::web::{self, Data, Json};
 use actix_web::{HttpRequest, HttpResponse};
 use filecoin_proofs_api::{seal, PieceInfo};
 use log::trace;
 
 use crate::seal_data::*;
 use crate::types::WebPieceInfo;
+use crate::polling::*;
 
 pub async fn clear_cache(_req: HttpRequest, data: Json<ClearCacheData>) -> HttpResponse {
     trace!("clear_cache");
@@ -55,23 +59,29 @@ pub async fn compute_comm_d(data: Json<ComputeCommDData>) -> HttpResponse {
     HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
 }
 
-pub async fn seal_commit_phase1(data: Json<SealCommitPhase1Data>) -> HttpResponse {
+pub async fn seal_commit_phase1(state: Data<Arc<Mutex<ServState>>>, data: Json<SealCommitPhase1Data>) -> HttpResponse {
     trace!("seal_commit_phase1");
 
-    let piece_infos: Vec<PieceInfo> = data.piece_infos.iter().map(|x| x.as_object()).collect();
+    let (tx, rx) = channel();
+    let handle: JoinHandle<()> = thread::spawn(move || {
+        let piece_infos: Vec<PieceInfo> = data.piece_infos.iter().map(|x| x.as_object()).collect();
 
-    let r = seal::seal_commit_phase1(
-        &data.cache_path,
-        &data.replica_path,
-        data.prover_id,
-        data.sector_id,
-        data.ticket,
-        data.seed,
-        data.pre_commit.clone(),
-        &piece_infos[..],
-    );
+        let r = seal::seal_commit_phase1(
+            &data.cache_path,
+            &data.replica_path,
+            data.prover_id,
+            data.sector_id,
+            data.ticket,
+            data.seed,
+            data.pre_commit.clone(),
+            &piece_infos[..],
+        );
 
-    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+        tx.send(json!(r)).unwrap();
+    });
+
+    let response = state.lock().unwrap().enqueue(handle, rx);
+    HttpResponse::Ok().json(response)
 }
 
 pub async fn seal_commit_phase2(data: Json<SealCommitPhase2Data>) -> HttpResponse {
