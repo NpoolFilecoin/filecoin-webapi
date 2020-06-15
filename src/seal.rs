@@ -85,12 +85,18 @@ pub async fn seal_commit_phase1(state: Data<Arc<Mutex<ServState>>>, data: Json<S
     HttpResponse::Ok().json(response)
 }
 
-pub async fn seal_commit_phase2(data: Json<SealCommitPhase2Data>) -> HttpResponse {
+pub async fn seal_commit_phase2(state: Data<Arc<Mutex<ServState>>>, data: Json<SealCommitPhase2Data>) -> HttpResponse {
     trace!("seal_commit_phase2");
 
-    let r = seal::seal_commit_phase2(data.phase1_output.clone(), data.prover_id, data.sector_id);
+    let (tx, rx) = channel();
+    let handle: JoinHandle<()> = thread::spawn(move || {
+        let r = seal::seal_commit_phase2(data.phase1_output.clone(), data.prover_id, data.sector_id);
 
-    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+        tx.send(json!(r.map_err(|e| format!("{:?}", e)))).unwrap();
+    });
+
+    let response = state.lock().unwrap().enqueue(handle, rx);
+    HttpResponse::Ok().json(response)
 }
 
 pub async fn verify_seal(data: Json<VerifySealData>) -> HttpResponse {
