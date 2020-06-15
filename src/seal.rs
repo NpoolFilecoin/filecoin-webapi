@@ -1,12 +1,17 @@
 use std::fs::OpenOptions;
 use std::io::Result;
 use std::path::Path;
+use std::sync::mpsc::channel;
+use std::sync::{Arc, Mutex};
+use std::thread::{self, JoinHandle};
 
-use actix_web::web::Json;
+use actix_web::web::{Data, Json};
 use actix_web::{HttpRequest, HttpResponse};
 use filecoin_proofs_api::{seal, PieceInfo};
 use log::trace;
+use serde_json::json;
 
+use crate::polling::*;
 use crate::seal_data::*;
 use crate::types::WebPieceInfo;
 
@@ -55,23 +60,29 @@ pub async fn compute_comm_d(data: Json<ComputeCommDData>) -> HttpResponse {
     HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
 }
 
-pub async fn seal_commit_phase1(data: Json<SealCommitPhase1Data>) -> HttpResponse {
+pub async fn seal_commit_phase1(state: Data<Arc<Mutex<ServState>>>, data: Json<SealCommitPhase1Data>) -> HttpResponse {
     trace!("seal_commit_phase1");
 
-    let piece_infos: Vec<PieceInfo> = data.piece_infos.iter().map(|x| x.as_object()).collect();
+    let (tx, rx) = channel();
+    let handle: JoinHandle<()> = thread::spawn(move || {
+        let piece_infos: Vec<PieceInfo> = data.piece_infos.iter().map(|x| x.as_object()).collect();
 
-    let r = seal::seal_commit_phase1(
-        &data.cache_path,
-        &data.replica_path,
-        data.prover_id,
-        data.sector_id,
-        data.ticket,
-        data.seed,
-        data.pre_commit.clone(),
-        &piece_infos[..],
-    );
+        let r = seal::seal_commit_phase1(
+            &data.cache_path,
+            &data.replica_path,
+            data.prover_id,
+            data.sector_id,
+            data.ticket,
+            data.seed,
+            data.pre_commit.clone(),
+            &piece_infos[..],
+        );
 
-    HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
+        tx.send(json!(r.map_err(|e| format!("{:?}", e)))).unwrap();
+    });
+
+    let response = state.lock().unwrap().enqueue(handle, rx);
+    HttpResponse::Ok().json(response)
 }
 
 pub async fn seal_commit_phase2(data: Json<SealCommitPhase2Data>) -> HttpResponse {
