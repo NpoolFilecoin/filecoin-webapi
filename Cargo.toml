@@ -27,7 +27,7 @@ env_logger = "*"
 serde = { version = "1.0.104", features = ["derive"] }
 serde_json = "*"
 mime = "*"
-lazy_static = "*"
+lazy_static = "^1.4"
 libc = "*"
 
 [dependencies.filecoin-proofs-api]
