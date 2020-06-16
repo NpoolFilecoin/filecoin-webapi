@@ -6,13 +6,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::*;
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ClearCacheData {
     pub sector_size: u64,
     pub cache_path: String,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SealPreCommitPhase1Data {
     pub registered_proof: RegisteredSealProof,
     pub cache_path: String,
@@ -24,20 +24,20 @@ pub struct SealPreCommitPhase1Data {
     pub piece_infos: Vec<WebPieceInfo>,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SealPreCommitPhase2Data {
     pub phase1_output: SealPreCommitPhase1Output,
     pub cache_path: String,
     pub out_path: String,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ComputeCommDData {
     pub registered_proof: RegisteredSealProof,
     pub piece_infos: Vec<WebPieceInfo>,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SealCommitPhase1Data {
     pub cache_path: String,
     pub replica_path: String,
@@ -49,14 +49,14 @@ pub struct SealCommitPhase1Data {
     pub piece_infos: Vec<WebPieceInfo>,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SealCommitPhase2Data {
     pub phase1_output: SealCommitPhase1Output,
     pub prover_id: ProverId,
     pub sector_id: SectorId,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct VerifySealData {
     pub registered_proof: RegisteredSealProof,
     pub comm_r_in: Commitment,
@@ -68,7 +68,7 @@ pub struct VerifySealData {
     pub proof_vec: Vec<u8>,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct VerifyBatchSealData {
     pub registered_proof: RegisteredSealProof,
     pub comm_r_ins: Vec<Commitment>,
@@ -80,7 +80,7 @@ pub struct VerifyBatchSealData {
     pub proof_vecs: Vec<Vec<u8>>,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GetUnsealedRangeData {
     pub registered_proof: RegisteredSealProof,
     pub cache_path: String,
@@ -94,14 +94,14 @@ pub struct GetUnsealedRangeData {
     pub num_bytes: UnpaddedBytesAmount,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GeneratePieceCommitmentData {
     pub registered_proof: RegisteredSealProof,
     pub source: String,
     pub piece_size: UnpaddedBytesAmount,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct AddPieceData {
     pub registered_proof: RegisteredSealProof,
     pub source: String,
@@ -110,7 +110,7 @@ pub struct AddPieceData {
     pub piece_lengths: Vec<UnpaddedBytesAmount>,
 }
 
-#[derive(Serialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct AddPieceOutput(WebPieceInfo, UnpaddedBytesAmount);
 
 impl AddPieceOutput {
@@ -122,7 +122,7 @@ impl AddPieceOutput {
     }
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct WriteAndPreprocessData {
     pub registered_proof: RegisteredSealProof,
     pub source: String,
