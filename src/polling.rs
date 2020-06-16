@@ -53,11 +53,10 @@ impl ServState {
         PollingState::Started(token)
     }
 
-    // TODO: remove if worker is done
     // TODO: remove if not query after long time
-    pub fn get(&self, token: u64) -> PollingState {
+    pub fn get(&mut self, token: u64) -> PollingState {
         self.workers
-            .get(&token)
+            .remove(&token)
             .map(|x| match x.1.try_recv() {
                 Ok(r) => PollingState::Done(r),
                 Err(TryRecvError::Empty) => PollingState::Pending,
