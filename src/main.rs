@@ -44,7 +44,7 @@ async fn main() -> std::io::Result<()> {
         }
     }
 
-    env_logger::init();
+    fil_logger::init();
     std::fs::create_dir_all("/tmp/upload/")?;
     let state = Arc::new(Mutex::new(ServState::new()));
 
