@@ -23,7 +23,7 @@ actix-web = "^2"
 actix-multipart = "*"
 futures = "^0.3"
 log = "*"
-env_logger = "*"
+fil_logger = "*"
 serde = { version = "1.0.104", features = ["derive"] }
 serde_json = "*"
 mime = "*"

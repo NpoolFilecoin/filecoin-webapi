@@ -61,7 +61,7 @@ pub async fn compute_comm_d(data: Json<ComputeCommDData>) -> HttpResponse {
 }
 
 pub async fn seal_commit_phase1(state: Data<Arc<Mutex<ServState>>>, data: Json<SealCommitPhase1Data>) -> HttpResponse {
-    trace!("seal_commit_phase1");
+    trace!("seal_commit_phase1: {:?}", data);
 
     let (tx, rx) = channel();
     let handle: JoinHandle<()> = thread::spawn(move || {
@@ -78,6 +78,7 @@ pub async fn seal_commit_phase1(state: Data<Arc<Mutex<ServState>>>, data: Json<S
             &piece_infos[..],
         );
 
+        trace!("seal_commit_phase1 finished: {:?}", r);
         tx.send(json!(r.map_err(|e| format!("{:?}", e)))).unwrap();
     });
 
@@ -86,12 +87,13 @@ pub async fn seal_commit_phase1(state: Data<Arc<Mutex<ServState>>>, data: Json<S
 }
 
 pub async fn seal_commit_phase2(state: Data<Arc<Mutex<ServState>>>, data: Json<SealCommitPhase2Data>) -> HttpResponse {
-    trace!("seal_commit_phase2");
+    trace!("seal_commit_phase2: {:?}", data);
 
     let (tx, rx) = channel();
     let handle: JoinHandle<()> = thread::spawn(move || {
         let r = seal::seal_commit_phase2(data.phase1_output.clone(), data.prover_id, data.sector_id);
 
+        trace!("seal_commit_phase2 finished: {:?}", r);
         tx.send(json!(r.map_err(|e| format!("{:?}", e)))).unwrap();
     });
 
