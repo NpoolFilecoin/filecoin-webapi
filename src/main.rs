@@ -1,12 +1,12 @@
 use std::env;
 use std::sync::{Arc, Mutex};
 
-use actix_web::FromRequest;
+// use actix_web::FromRequest;
 use actix_web::{error, middleware, web};
 use actix_web::{App, HttpRequest, HttpResponse, HttpServer};
 use log::{error, warn};
 
-use crate::seal_data::SealCommitPhase1Data;
+// use crate::seal_data::SealCommitPhase1Data;
 use polling::ServState;
 
 mod polling;
@@ -76,11 +76,11 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/seal/compute_comm_d").route(web::post().to(seal::compute_comm_d)))
             .service(
                 web::resource("/seal/seal_commit_phase1")
-                    .app_data(web::Json::<SealCommitPhase1Data>::configure(|cfg| {
-                        cfg.limit(4096)
-                            .content_type(|mime| mime.type_() == mime::TEXT && mime.subtype() == mime::PLAIN)
-                            .error_handler(json_error_handler)
-                    }))
+                    // .app_data(web::Json::<SealCommitPhase1Data>::configure(|cfg| {
+                    //     cfg.limit(4096)
+                    //         .content_type(|mime| mime.type_() == mime::TEXT && mime.subtype() == mime::PLAIN)
+                    //         .error_handler(json_error_handler)
+                    // }))
                     .route(web::post().to(seal::seal_commit_phase1)),
             )
             .service(web::resource("/seal/seal_commit_phase2").route(web::post().to(seal::seal_commit_phase2)))
