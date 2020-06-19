@@ -32,4 +32,4 @@ libc = "*"
 
 [dependencies.filecoin-proofs-api]
 git = "https://github.com/filecoin-project/rust-filecoin-proofs-api.git"
-branch = "release/v4.0.0"
+branch = "releases/v4.0.0"
