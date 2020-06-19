@@ -31,5 +31,5 @@ lazy_static = "^1.4"
 libc = "*"
 
 [dependencies.filecoin-proofs-api]
-git = "https://github.com/filecoin-project/rust-filecoin-proofs-api.git"
-branch = "releases/v4.0.0"
+package = "filecoin-proofs-api"
+version = "4.0.0"

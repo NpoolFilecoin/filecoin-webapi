@@ -1232,7 +1232,8 @@ dependencies = [
 [[package]]
 name = "filecoin-proofs-api"
 version = "4.0.0"
-source = "git+https://github.com/filecoin-project/rust-filecoin-proofs-api.git?branch=releases/v4.0.0#9164a64d8cbc38b8bf85a5f608dfb606ea1eca4e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6c7d03fc8bbd59ed59ff7331f30c92e358740889a60fc119d93b35ca395daca0"
 dependencies = [
  "anyhow",
  "filecoin-proofs",
