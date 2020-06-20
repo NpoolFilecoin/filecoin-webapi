@@ -55,14 +55,24 @@ impl ServState {
 
     // TODO: remove if not query after long time
     pub fn get(&mut self, token: u64) -> PollingState {
-        self.workers
-            .remove(&token)
+        let state = self
+            .workers
+            .get(&token)
             .map(|x| match x.1.try_recv() {
                 Ok(r) => PollingState::Done(r),
                 Err(TryRecvError::Empty) => PollingState::Pending,
                 Err(TryRecvError::Disconnected) => PollingState::Error(PollingError::Disconnected),
             })
-            .unwrap_or(PollingState::Error(PollingError::NotExist))
+            .unwrap_or(PollingState::Error(PollingError::NotExist));
+
+        match &state {
+            PollingState::Done(_) => {
+                self.workers.remove(&token);
+            }
+            _ => {}
+        };
+
+        state
     }
 
     pub fn remove(&mut self, token: u64) -> PollingState {

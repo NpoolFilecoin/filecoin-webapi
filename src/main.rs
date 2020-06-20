@@ -6,7 +6,7 @@ use actix_web::{error, middleware, web};
 use actix_web::{App, HttpRequest, HttpResponse, HttpServer};
 use log::{error, warn};
 
-// use crate::seal_data::SealCommitPhase1Data;
+// use crate::seal_data::SealCommitPhase2Data;
 use polling::ServState;
 
 mod polling;
@@ -74,16 +74,16 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/seal/seal_pre_commit_phase1").route(web::post().to(seal::seal_pre_commit_phase1)))
             .service(web::resource("/seal/seal_pre_commit_phase2").route(web::post().to(seal::seal_pre_commit_phase2)))
             .service(web::resource("/seal/compute_comm_d").route(web::post().to(seal::compute_comm_d)))
+            .service(web::resource("/seal/seal_commit_phase1").route(web::post().to(seal::seal_commit_phase1)))
             .service(
-                web::resource("/seal/seal_commit_phase1")
-                    // .app_data(web::Json::<SealCommitPhase1Data>::configure(|cfg| {
-                    //     cfg.limit(4096)
-                    //         .content_type(|mime| mime.type_() == mime::TEXT && mime.subtype() == mime::PLAIN)
+                web::resource("/seal/seal_commit_phase2")
+                    // .app_data(web::Json::<SealCommitPhase2Data>::configure(|cfg| {
+                    // cfg.limit(1024000)
+                    //         .content_type(|_mime| true)
                     //         .error_handler(json_error_handler)
                     // }))
-                    .route(web::post().to(seal::seal_commit_phase1)),
+                    .route(web::post().to(seal::seal_commit_phase2)),
             )
-            .service(web::resource("/seal/seal_commit_phase2").route(web::post().to(seal::seal_commit_phase2)))
             .service(web::resource("/seal/verify_seal").route(web::post().to(seal::verify_seal)))
             .service(web::resource("/seal/verify_batch_seal").route(web::post().to(seal::verify_batch_seal)))
             .service(web::resource("/seal/get_unsealed_range").route(web::post().to(seal::get_unsealed_range)))

@@ -22,6 +22,8 @@ actix-rt = "*"
 actix-web = "^2"
 actix-multipart = "*"
 futures = "^0.3"
+futures-core = "*"
+futures-util = "*"
 log = "*"
 fil_logger = "*"
 serde = { version = "1.0.104", features = ["derive"] }
@@ -29,6 +31,7 @@ serde_json = "*"
 mime = "*"
 lazy_static = "^1.4"
 libc = "*"
+bytes = "*"
 
 [dependencies.filecoin-proofs-api]
 package = "filecoin-proofs-api"

@@ -1,14 +1,16 @@
 use std::fs::OpenOptions;
-use std::io::Result;
+use std::io;
 use std::path::Path;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 
-use actix_web::web::{Data, Json};
-use actix_web::{HttpRequest, HttpResponse};
+use actix_web::web::{Data, Json, Payload};
+use actix_web::{Error, HttpRequest, HttpResponse};
+use bytes::BytesMut;
 use filecoin_proofs_api::{seal, PieceInfo};
-use log::trace;
+use futures_util::StreamExt;
+use log::{error, trace};
 use serde_json::json;
 
 use crate::polling::*;
@@ -79,14 +81,25 @@ pub async fn seal_commit_phase1(state: Data<Arc<Mutex<ServState>>>, data: Json<S
         );
 
         trace!("seal_commit_phase1 finished: {:?}", r);
-        tx.send(json!(r.map_err(|e| format!("{:?}", e)))).unwrap();
+        if let Err(e) = tx.send(json!(r.map_err(|e| format!("{:?}", e)))) {
+            error!("{:?}", e);
+        }
     });
 
     let response = state.lock().unwrap().enqueue(handle, rx);
     HttpResponse::Ok().json(response)
 }
 
-pub async fn seal_commit_phase2(state: Data<Arc<Mutex<ServState>>>, data: Json<SealCommitPhase2Data>) -> HttpResponse {
+pub async fn seal_commit_phase2(
+    state: Data<Arc<Mutex<ServState>>>,
+    mut payload: Payload,
+) -> Result<HttpResponse, Error> {
+    let mut bytes = BytesMut::new();
+    while let Some(item) = payload.next().await {
+        bytes.extend_from_slice(&item?);
+    }
+
+    let data: SealCommitPhase2Data = serde_json::from_slice(bytes.as_ref())?;
     trace!("seal_commit_phase2: {:?}", data);
 
     let (tx, rx) = channel();
@@ -94,11 +107,13 @@ pub async fn seal_commit_phase2(state: Data<Arc<Mutex<ServState>>>, data: Json<S
         let r = seal::seal_commit_phase2(data.phase1_output.clone(), data.prover_id, data.sector_id);
 
         trace!("seal_commit_phase2 finished: {:?}", r);
-        tx.send(json!(r.map_err(|e| format!("{:?}", e)))).unwrap();
+        if let Err(e) = tx.send(json!(r.map_err(|e| format!("{:?}", e)))) {
+            error!("{:?}", e);
+        }
     });
 
     let response = state.lock().unwrap().enqueue(handle, rx);
-    HttpResponse::Ok().json(response)
+    Ok(HttpResponse::Ok().json(response))
 }
 
 pub async fn verify_seal(data: Json<VerifySealData>) -> HttpResponse {
@@ -156,7 +171,7 @@ pub async fn get_unsealed_range(data: Json<GetUnsealedRangeData>) -> HttpRespons
     HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
 }
 
-pub async fn generate_piece_commitment(data: Json<GeneratePieceCommitmentData>) -> Result<HttpResponse> {
+pub async fn generate_piece_commitment(data: Json<GeneratePieceCommitmentData>) -> io::Result<HttpResponse> {
     trace!("generate_piece_commitment");
 
     let source = OpenOptions::new().read(true).open(&data.source)?;
@@ -165,7 +180,7 @@ pub async fn generate_piece_commitment(data: Json<GeneratePieceCommitmentData>) 
     Ok(HttpResponse::Ok().json(r.map(|x| WebPieceInfo::from_object(x)).map_err(|e| format!("{:?}", e))))
 }
 
-pub async fn add_piece(data: Json<AddPieceData>) -> Result<HttpResponse> {
+pub async fn add_piece(data: Json<AddPieceData>) -> io::Result<HttpResponse> {
     trace!("add_piece");
 
     let source = OpenOptions::new().read(true).open(&data.source)?;
@@ -184,7 +199,7 @@ pub async fn add_piece(data: Json<AddPieceData>) -> Result<HttpResponse> {
     ))
 }
 
-pub async fn write_and_preprocess(data: Json<WriteAndPreprocessData>) -> Result<HttpResponse> {
+pub async fn write_and_preprocess(data: Json<WriteAndPreprocessData>) -> io::Result<HttpResponse> {
     trace!("write_and_preprocess");
 
     let source = OpenOptions::new().read(true).open(&data.source)?;
