@@ -33,6 +33,4 @@ lazy_static = "^1.4"
 libc = "*"
 bytes = "*"
 
-[dependencies.filecoin-proofs-api]
-package = "filecoin-proofs-api"
-version = "4.0.0"
+filecoin-proofs-api = { path = "../rust-filecoin-proofs-api" }
