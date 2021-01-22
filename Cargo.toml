@@ -33,4 +33,10 @@ lazy_static = "^1.4"
 libc = "*"
 bytes = "*"
 
-filecoin-proofs-api = { path = "../rust-filecoin-proofs-api" }
+filecoin-proofs-api = { path = "../rust-filecoin-proofs-api", default-features = false }
+
+
+[features]
+default = ["pairing"]
+pairing = ["filecoin-proofs-api/pairing"]
+blst = ["filecoin-proofs-api/blst"]
