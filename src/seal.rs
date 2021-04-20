@@ -39,6 +39,7 @@ pub async fn seal_pre_commit_phase1(data: Json<SealPreCommitPhase1Data>) -> Http
         data.sector_id,
         data.ticket,
         &piece_infos[..],
+        false,
     );
 
     HttpResponse::Ok().json(r.map_err(|e| format!("{:?}", e)))
