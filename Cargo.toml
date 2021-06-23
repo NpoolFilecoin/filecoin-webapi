@@ -40,3 +40,6 @@ filecoin-proofs-api = { path = "../rust-filecoin-proofs-api", default-features =
 default = ["pairing"]
 pairing = ["filecoin-proofs-api/pairing"]
 blst = ["filecoin-proofs-api/blst"]
+
+[patch.crates-io]
+merkletree = { path = "../merkletree" }
